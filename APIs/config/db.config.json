@@ -1,0 +1,9 @@
+{
+    "development":{
+        "user":"root",
+         "password":"root",
+         "databse":"subshx-chat",
+         "host":"localhost",
+         "dialect":"mysql"
+    }
+}
