@@ -7,7 +7,7 @@ const fileUpload = require("express-fileupload");
 const { Connectmsql } = require("./models");
 const app = express();
 const http = require("http").Server(app);
-const nextApp = next({ dev: true });
+const nextApp = next({ dev: false });
 const apiRoutes = require("./routes/apis");
 const sockets = require("./sockets");
 app.use(cors());
