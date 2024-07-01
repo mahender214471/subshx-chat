@@ -1,4 +1,5 @@
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import { Inter as FontSans } from "next/font/google";
 
 import { cn } from "@/lib/utils";
@@ -8,6 +9,8 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 import { ThemeProvider } from "./UI/ThemeProvider";
+import ReduxProvider from "./redux/ReduxProvider";
+import { ToastContainer } from "react-toastify";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -17,10 +20,13 @@ export default function RootLayout({ children }) {
           fontSans.variable
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="light">
-          {children}
-        </ThemeProvider>
+        <ReduxProvider>
+          <ToastContainer />
+          <ThemeProvider attribute="class" defaultTheme="light">
+            {children}
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
-    </html> 
+    </html>
   );
 }

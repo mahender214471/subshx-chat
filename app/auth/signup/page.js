@@ -1,6 +1,48 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import { useState } from "react";
+import { signupAPI } from "@/app/redux/appSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 export default function page() {
+  const dispach = useDispatch();
+  const router = useRouter();
+  const { loading, errorMessage, sucess } = useSelector(
+    (store) => store?.AppState?.signupState
+  );
+  useEffect(() => {
+    if (sucess) {
+      router.push("/auth/login");
+    }
+  }, [sucess]);
+  const [form, setForm] = useState({
+    email: "",
+    phone: "",
+    name: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState(false);
+  const handdleFormChnage = (event) => {
+    const name = event?.target?.name;
+    const value = event?.target?.value;
+    if (name == "confirmPassword") {
+      if (form?.password !== value) {
+        setError(true);
+      } else setError(false);
+    }
+    setForm((state) => {
+      state[name] = value;
+      return { ...state };
+    });
+  };
+  const handdleFormSubmit = (event) => {
+    event.preventDefault();
+    console.log("fomrdata ============>", form);
+    const { name, email, phone, password } = form;
+    dispach(signupAPI({ name, email, phone, password }));
+  };
   return (
     <section className="bg-white">
       <div className="w-full h-[100vh] flex">
@@ -38,14 +80,14 @@ export default function page() {
                 Login
               </Link>
             </p>
-            <form action="#" method="POST" className="mt-8">
+            <form className="mt-8" onSubmit={handdleFormSubmit}>
               <div className="space-y-5">
                 <div>
                   <label
                     htmlFor=""
                     className="text-base font-medium text-gray-900"
                   >
-                    Email &amp; Phone
+                    Email
                   </label>
                   <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -65,9 +107,46 @@ export default function page() {
                       </svg>
                     </div>
                     <input
-                      type="text"
-                      name=""
-                      id=""
+                      type="email"
+                      required
+                      name="email"
+                      value={form?.email}
+                      onChange={handdleFormChnage}
+                      placeholder="Enter your login ID"
+                      className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    htmlFor=""
+                    className="text-base font-medium text-gray-900"
+                  >
+                    Phone
+                  </label>
+                  <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <svg
+                        className="w-5 h-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type="number"
+                      name="phone"
+                      required
+                      value={form?.phone}
+                      onChange={handdleFormChnage}
                       placeholder="Enter your login ID"
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -99,8 +178,10 @@ export default function page() {
                     </div>
                     <input
                       type="text"
-                      name=""
-                      id=""
+                      name="name"
+                      required
+                      value={form?.name}
+                      onChange={handdleFormChnage}
                       placeholder="Enter your login ID"
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -111,8 +192,7 @@ export default function page() {
                     htmlFor=""
                     className="text-base font-medium text-gray-900"
                   >
-                    {" "}
-                    Password{" "}
+                    Password
                   </label>
                   <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -133,8 +213,10 @@ export default function page() {
                     </div>
                     <input
                       type="password"
-                      name=""
-                      id=""
+                      name="password"
+                      required
+                      value={form?.password}
+                      onChange={handdleFormChnage}
                       placeholder="Enter your password"
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -166,19 +248,27 @@ export default function page() {
                     </div>
                     <input
                       type="password"
-                      name=""
-                      id=""
+                      name="confirmPassword"
+                      required
+                      value={form?.confirmPassword}
+                      onChange={handdleFormChnage}
                       placeholder="Enter your password"
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
+                    {error ? (
+                      <p className="text-sm capitalize text-red-600 pt-2">
+                        Confirm password not matched
+                      </p>
+                    ) : null}
                   </div>
                 </div>
                 <div>
                   <button
+                    disabled={error || loading}
                     type="submit"
                     className="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-500 to-pink-500 focus:outline-none hover:opacity-80 focus:opacity-80"
                   >
-                    Sign up
+                    {loading ? "Please wait.." : "Sign up"}
                   </button>
                 </div>
               </div>

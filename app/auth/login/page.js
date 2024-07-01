@@ -1,6 +1,39 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { loginAPI } from "@/app/redux/appSlice";
+import { useEffect } from "react";
 export default function page() {
+  const dispach = useDispatch();
+  const router = useRouter();
+  const { loading, sucess } = useSelector(
+    (store) => store?.AppState?.loginState
+  );
+  useEffect(() => {
+    if (sucess) {
+      router.push("/");
+    }
+  }, [sucess]);
+  const [form, setForm] = useState({
+    loginID: "",
+    password: "",
+  });
+  const handdleFormChnage = (event) => {
+    const name = event?.target?.name;
+    const value = event?.target?.value;
+
+    setForm((state) => {
+      state[name] = value;
+      return { ...state };
+    });
+  };
+  const handdleFormSubmit = (event) => {
+    event.preventDefault();
+    dispach(loginAPI(form));
+  };
   return (
     <section className="bg-white">
       <div className="w-full h-[100vh] flex">
@@ -35,7 +68,7 @@ export default function page() {
                 signup
               </Link>
             </p>
-            <form action="#" method="POST" className="mt-8">
+            <form method="POST" className="mt-8" onSubmit={handdleFormSubmit}>
               <div className="space-y-5">
                 <div>
                   <label
@@ -64,8 +97,9 @@ export default function page() {
                     </div>
                     <input
                       type="text"
-                      name=""
-                      id=""
+                      name="loginID"
+                      value={form?.loginID}
+                      onChange={handdleFormChnage}
                       placeholder="Enter your login ID"
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -98,8 +132,9 @@ export default function page() {
                     </div>
                     <input
                       type="password"
-                      name=""
-                      id=""
+                      name="password"
+                      value={form?.password}
+                      onChange={handdleFormChnage}
                       placeholder="Enter your password"
                       className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -107,10 +142,11 @@ export default function page() {
                 </div>
                 <div>
                   <button
+                    disabled={loading}
                     type="submit"
                     className="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-500 to-pink-500 focus:outline-none hover:opacity-80 focus:opacity-80"
                   >
-                    Sign up
+                    {loading ? "Please wait .." : "Login"}
                   </button>
                 </div>
               </div>

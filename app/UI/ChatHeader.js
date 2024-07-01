@@ -19,7 +19,7 @@ import {
 import Link from "next/link";
 export default function ChatHeader() {
   return (
-    <header className="p-4 border-b border-gray-300 flex justify-between items-center  text-white bg-gradient-to-r from-fuchsia-500 to-pink-500">
+    <div className="p-4 border-b border-gray-300 flex justify-between items-center  text-white bg-gradient-to-r from-fuchsia-500 to-pink-500">
       <UserAvtar name="mk" />
       <h1 className="text-2xl font-semibold">Subbx Infotech</h1>
       <div className="relative">
@@ -61,6 +61,6 @@ export default function ChatHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </header>
+    </div>
   );
 }
